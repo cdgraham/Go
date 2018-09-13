@@ -1,8 +1,6 @@
 #include "board.h"
 
-void display_board (enum color player,
-                        enum color intersections[MAX_BOARD][MAX_BOARD])
-{
+void display_board (enum color player, enum color intersections[MAX_BOARD][MAX_BOARD]) {
         int i;
         int x;
         int y;
@@ -69,17 +67,60 @@ void get_move(enum color *player,
         }
 }
 
-int on_board(int M[MAX_BOARD][MAX_BOARD], int row, int col,
-                int visited[MAX_BOARD][MAX_BOARD])
+int on_board(enum color player, enum color M[MAX_BOARD][MAX_BOARD], int row, int col,
+                bool visited[MAX_BOARD][MAX_BOARD])
 {
-        result = (row >= 0) && (row < MAX_BOARD) && (col >= 0) && (col < MAX_BOARD) && (M[row][col] && !visited[row][col]);
-        return result;
+        return  (row >= 0) && (row < MAX_BOARD) && 
+		(col >= 0) && (col < MAX_BOARD) && 
+		(M[row][col] == player && !visited[row][col]);
+}
+
+void DFS(enum color player, enum color M[][MAX_BOARD], int row, int col, bool visited[][MAX_BOARD])
+{
+	// These arrays are used to get row and column numbers of 4 neighbors of given cell
+	static int row_num[] = {-1, 0, 0, 1};
+	static int col_num[] = {0, 1, -1, 0};
+
+	// Mark this cell as visited
+	visited[row][col] = true;
+	
+	// Recursion for all connected neighbors
+	for (int k = 0; k < 4; k++)
+	{
+		printf("checking [%d][%d] ", row + row_num[k], col + col_num[k]);
+		if (on_board(player, M, row + row_num[k], col + col_num[k], visited))
+		{
+			printf(" is on board\n");
+			DFS(player, M, row + row_num[k], col + col_num[k], visited);
+		}
+	}
+}
+
+int count_islands(enum color player, enum color M[][MAX_BOARD])
+{
+	int i, j;
+	bool visited[MAX_BOARD][MAX_BOARD];
+	memset(visited, 0, sizeof(visited));
+
+	// Initialize count to 0 and travese all cells
+	int count = 0;
+	for (i = 0; i < MAX_BOARD; ++i)
+		for (j = 0; j < MAX_BOARD; ++j)
+			if (M[i][j] == player && !visited[i][j])
+			{
+				printf("Visited [%d][%d]\n", i, j);
+				DFS(player, M, i, j, visited);
+				++count;
+			}
+
+	return count;
 }
 
 void display_help()
 {
         printf("Available Commands\n");
         printf("m - place a stone on the board\n");
+        printf("c - count longest chain on the board\n");
         printf("h - Help (this screen)\n");
         printf("q - Quit\n\n");
         printf("Press a key to continue\n");
@@ -112,6 +153,9 @@ int main ()
                                 break;
                         case 'm':
                                 get_move(&player, intersections);
+                                break;
+                        case 'c':
+                                printf("Longest chain is %d\n", count_islands(player, intersections));
                                 break;
                         default:
                                 continue;

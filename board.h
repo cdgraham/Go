@@ -1,6 +1,8 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 #include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
 
 #define MAX_BOARD       9       /* Maximum board size */
 
@@ -30,7 +32,7 @@ void display_board (enum color player,
 void display_help ();
 void get_move (enum color *player,
                 enum color intersections[MAX_BOARD][MAX_BOARD]);
-int on_board(int M[MAX_BOARD][MAX_BOARD], int row, int col,
-                int visited[MAX_BOARD][MAX_BOARD])
+int on_board(enum color player, enum color M[MAX_BOARD][MAX_BOARD], int row, int col,
+                bool visited[MAX_BOARD][MAX_BOARD]);
 
 #endif  /* _BOARD_H_ */
