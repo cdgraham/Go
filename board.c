@@ -133,13 +133,7 @@ int main ()
         enum color player = BLACK;
         enum color intersections[MAX_BOARD][MAX_BOARD] = { EMPTY };
 
-        printf("Go Game\n");
-
-        /*
-        intersections[0][2] = WHITE;
-        intersections[2][2] = BLACK;
-        intersections[3][2] = BLACK;
-        */
+        printf("Go Game\n\n");
 
         display_board(player, intersections);
 
